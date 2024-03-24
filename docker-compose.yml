@@ -1,0 +1,33 @@
+version: '1.0'
+services:
+  backend:
+    container_name: NiyaVoyage-REST-API
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/server
+    depends_on:
+      - db
+    environment:
+      SQLITE_DB: /server/github.com/mmanjoura/niya-voyage.db
+      JWT_SECRET_KEY: ObL89O3nOSSEj6tbdHako0cXtPErzBUfq8l8o/3KD9g=INSECURE
+      API_SECRET_KEY: cJGZ8L1sDcPezjOy1zacPJZxzZxrPObm2Ggs1U0V+fE=INSECURE
+
+  db:
+    image: alpine
+    restart: always
+    container_name: dockerSQLite
+    volumes:
+      - .:/server
+    environment:
+      - SQLITE_DB=/server/github.com/mmanjoura/niya-voyage.db
+    command: /bin/sh -c "echo 'This is a placeholder for SQLite container' && sleep infinity"
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+    container_name: dockerRedis
