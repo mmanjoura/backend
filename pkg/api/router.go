@@ -19,7 +19,6 @@ import (
 	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/auth"
 	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/middleware"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -33,36 +32,15 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	if gin.Mode() == gin.ReleaseMode {
 		r.Use(middleware.Security())
-		//r.Use(middleware.Xss())
+		// r.Use(middleware.Xss())
 	}
-	// r.Use(middleware.Cors())
-	// r.Use(middleware.CORSMiddleware())
-
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "https://niya-voyage-backend-service-d4a23urhsq-uc.a.run.app"}, // Add your frontend URL(s) here
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "credentials"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
+	r.Use(middleware.Cors())
 
 	r.Use(middleware.RateLimiter(rate.Every(1*time.Minute), 600)) // 60 requests per minute
 
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
-
-		//Login routes
-		// v1.POST("/login", middleware.APIKeyAuth(), auth.LoginHandler)
-		// v1.POST("/register", middleware.APIKeyAuth(), auth.RegisterHandler)
-
-		//password routes
-		// v1.GET("/changePasses", middleware.APIKeyAuth(), changePasses.FindPasswords)
-		// v1.POST("/changePasses", middleware.APIKeyAuth(), middleware.JWTAuth(), changePasses.CreatePassword)
-		// v1.GET("/changePasses/:id", middleware.APIKeyAuth(), changePasses.FindPassword)
-		// v1.PUT("/changePasses/:id", middleware.APIKeyAuth(), changePasses.UpdatePassword)
-		// v1.DELETE("/changePasses/:id", middleware.APIKeyAuth(), changePasses.DeletePassword)
 
 		// tours routes
 		v1.GET("/tours", tours.GetAll)
