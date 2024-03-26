@@ -16,7 +16,7 @@ func JWTAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenStr, err := c.Cookie("Authorization")
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "cannot Get Authorization token"})
 			c.Abort()
 			return
 		}
@@ -25,7 +25,7 @@ func JWTAuth() gin.HandlerFunc {
 			return auth.JwtKey, nil
 		})
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Cannot parse token"})
 			c.Abort()
 			return
 		}
@@ -41,7 +41,7 @@ func JWTAuth() gin.HandlerFunc {
 			}
 
 		} else {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token when mapping Claims"})
 			c.Abort()
 			return
 		}
@@ -55,13 +55,13 @@ func JWTAuth() gin.HandlerFunc {
 		user, err := getUser(c, claims["iss"].(string))
 
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Error when getting user from token"})
 			c.Abort()
 			return
 		}
 
 		if user.ID == 0 {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User is not found"})
 			c.Abort()
 			return
 		}

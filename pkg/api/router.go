@@ -32,7 +32,6 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	if gin.Mode() == gin.ReleaseMode {
 		r.Use(middleware.Security())
-		// r.Use(middleware.Xss())
 	}
 	r.Use(middleware.Cors())
 

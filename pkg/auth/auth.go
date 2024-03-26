@@ -79,15 +79,12 @@ func LoginHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating token"})
 		return
 	}
-	c.Request.Header.Add("X-API-Key", token)
-
-	// Set a cookie named "jwt" with the provided token value
-	c.SetSameSite(http.SameSiteLaxMode)
-
-	c.SetCookie("Authorization", token, int(time.Hour*24), "/", "localhost", false, true)
+	c.SetSameSite(http.SameSiteNoneMode)
+	// Set a cookie named "Authorization" with the provided token value
+	// Replace "yourdomain.com" with the appropriate domain for your Cloud Run service
+	c.SetCookie("Authorization", token, int(time.Hour*24), "/", "https://niyavoyage.com", true, true)
 
 	c.JSON(http.StatusOK, gin.H{"user": dbUser})
-
 }
 
 // RegisterHandler godoc
