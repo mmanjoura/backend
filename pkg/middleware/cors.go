@@ -13,6 +13,7 @@ func Cors() gin.HandlerFunc {
 			"http://127.0.0.1",
 			"http://localhost",
 			"http://localhost:3000",
+			"http://localhost:3001",
 			"https://niya-voyage-frontend-app-d4a23urhsq-uc.a.run.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type", "credentials"},

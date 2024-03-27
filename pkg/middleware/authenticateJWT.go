@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	auth "github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/auth"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/database"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/models"
+	auth "github.com/mmanjoura/niya-voyage/backend/pkg/auth"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/database"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/models"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"

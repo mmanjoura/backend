@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/database"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/database"
 
 	"github.com/gin-gonic/gin"
 )

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/auth"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/auth"
 )
 
 func main() {

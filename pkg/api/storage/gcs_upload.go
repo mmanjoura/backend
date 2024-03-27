@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"image"
 	"io"
-	"mime/multipart"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,9 +13,9 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/common"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/database"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/models"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/common"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/database"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/models"
 )
 
 // Constants for configuration keys
@@ -28,7 +28,6 @@ const (
 func UploadImagesHandler(c *gin.Context) {
 	// Extract necessary information from the request
 	db := database.Database.DB
-	imageType := strings.ToUpper(c.Query("image"))
 	productType := strings.ToUpper(c.Query("category"))
 	id, err := strconv.Atoi(c.Query("id"))
 	if err != nil || id == 0 {
@@ -61,6 +60,7 @@ func UploadImagesHandler(c *gin.Context) {
 
 	// Variables to store uploaded images and context
 	var newGalleryImages []models.GalleryImage
+	var newSlideImages []models.SlideImage
 	ctx := context.Background()
 
 	// Create a new Cloud Storage client
@@ -94,46 +94,89 @@ func UploadImagesHandler(c *gin.Context) {
 		return
 	}
 
-	// Delete old references based on the image type
-	// deleteOldReferences(c, db, imageType, id, categoryID)
-
-	// Delete old images from Cloud Storage
-	// deleteImagesFromGCS(c, productType, id, categoryID)
-
 	// Process each uploaded file
 	for _, file := range files {
 		strID := strconv.Itoa(id)
-		filePath := folderName + strID + "_" + file.Filename
-		obj := bucket.Object(filePath)
 
-		// Upload the file to Cloud Storage
-		if err := uploadFileToStorage(ctx, obj, file); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
+		// convert the multipart file into io.Reader
+		fileReader, err := common.FileHeaderToReader(file)
 
-		// Construct the file location URL
-		fileLocation := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, filePath)
-
-		// Create a new GalleryImage model
-		newGalleryImage := models.GalleryImage{
-			CategoryID: strconv.Itoa(categoryID),
-			ReferrerID: strID,
-			Img:        fileLocation,
-			CreatedAt:  time.Now(),
-			UpdatedAt:  time.Now(),
-		}
-		// Append the new image to the slice
-		newGalleryImages = append(newGalleryImages, newGalleryImage)
-
-		// Insert the image into the database based on the image type
-		err := insertImageIntoDatabase(c, db, imageType, categoryID, id, newGalleryImage)
+		// decode the multipart file into an image
+		img, _, err := image.Decode(fileReader)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"data": newGalleryImages})
 
+		slideImage, err := common.ProcessImage(img, 451, 450)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		galleryImage, err := common.ProcessImage(img, 600, 500)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		// create a map of img.Image and string
+		imgMap := make(map[string]image.Image)
+		imgMap["slideImage"] = slideImage
+		imgMap["galleryImage"] = galleryImage
+
+		for key, scaledImage := range imgMap {
+			filePath := folderName + key + "_" + strID + "_" + file.Filename
+			obj := bucket.Object(filePath)
+			imgReader, err := common.ImageToReader(scaledImage)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			// Upload the galleryImag to Cloud Storage
+			if err := uploadFileToStorage(ctx, obj, imgReader); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			// Construct the file location URL
+			fileLocation := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, filePath)
+			// Create a new GalleryImage model
+
+			if strings.ToUpper(key) == "GALLERYIMAGE" {
+				newGalleryImage := models.GalleryImage{
+					CategoryID: strconv.Itoa(categoryID),
+					ReferrerID: strID,
+					Img:        fileLocation,
+					CreatedAt:  time.Now(),
+					UpdatedAt:  time.Now(),
+				}
+				// Append the new image to the slice
+				newGalleryImages = append(newGalleryImages, newGalleryImage)
+				err = insertImageIntoDatabase(c, db, "GALLERY", categoryID, id, newGalleryImage)
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+					return
+				}
+
+			}
+			if strings.ToUpper(key) == "SLIDEIMAGE" {
+				newSlideImage := models.SlideImage{
+					CategoryID: strconv.Itoa(categoryID),
+					ReferrerID: strID,
+					Img:        fileLocation,
+					CreatedAt:  time.Now(),
+					UpdatedAt:  time.Now(),
+				}
+				// Append the new image to the slice
+				newSlideImages = append(newSlideImages, newSlideImage)
+				err = insertImageIntoDatabase(c, db, "SLIDE", categoryID, id, newSlideImage)
+				if err != nil {
+					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+					return
+				}
+
+			}
+
+		}
 	}
 
 }
@@ -160,16 +203,12 @@ func deleteOldReferences(c *gin.Context, db *sql.DB, imageType string, id, categ
 }
 
 // uploadFileToStorage uploads a file to Cloud Storage.
-func uploadFileToStorage(ctx context.Context, obj *storage.ObjectHandle, file *multipart.FileHeader) error {
+func uploadFileToStorage(ctx context.Context, obj *storage.ObjectHandle, img io.Reader) error {
 	w := obj.NewWriter(ctx)
-	fileReader, err := file.Open()
-	defer fileReader.Close()
 
-	if err != nil {
-		return fmt.Errorf("Failed to open file: %w", err)
-	}
+	// Convert img into io.reader
 
-	if _, err := io.Copy(w, fileReader); err != nil {
+	if _, err := io.Copy(w, img); err != nil {
 		return fmt.Errorf("Failed to upload file: %w", err)
 	}
 
@@ -181,32 +220,38 @@ func uploadFileToStorage(ctx context.Context, obj *storage.ObjectHandle, file *m
 }
 
 // insertImageIntoDatabase inserts an image into the database based on the image type.
-func insertImageIntoDatabase(c *gin.Context, db *sql.DB, imageType string, categoryID, id int, newGalleryImage models.GalleryImage) error {
+func insertImageIntoDatabase(c *gin.Context, db *sql.DB, imageType string, categoryID, id int, images interface{}) error {
 	var tableName string
 
 	switch imageType {
 	case "GALLERY":
-		tableName = "Images"
+		tableName = "GalleryImages"
 	case "SLIDE":
-		tableName = "Images"
+		tableName = "SlideImages"
 	default:
 		tableName = "Images"
 	}
 
-	// Construct the SQL query to insert the image into the database
-	query := fmt.Sprintf("INSERT INTO %s (category_id, referrer_id, img) VALUES (?, ?, ?)", tableName)
-	if _, err := db.Exec(query, newGalleryImage.CategoryID, id, newGalleryImage.Img); err != nil {
-		// c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return err
+	galleryImage, ok := images.(models.GalleryImage)
+
+	if ok {
+		// Construct the SQL query to insert the image into the database
+		query := fmt.Sprintf("INSERT INTO %s (category_id, referrer_id, img) VALUES (?, ?, ?)", tableName)
+		if _, err := db.Exec(query, galleryImage.CategoryID, id, galleryImage.Img); err != nil {
+			// c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return err
+		}
+	}
+	slideImage, ok := images.(models.SlideImage)
+	if ok {
+		// Construct the SQL query to insert the image into the database
+		query := fmt.Sprintf("INSERT INTO %s (category_id, referrer_id, img) VALUES (?, ?, ?)", tableName)
+		if _, err := db.Exec(query, slideImage.CategoryID, id, slideImage.Img); err != nil {
+			// c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return err
+		}
+
+		return nil
 	}
 	return nil
-}
-
-// deleteImagesFromGCS deletes old images from Cloud Storage.
-func deleteImagesFromGCS(c *gin.Context, productType string, id, categoryID int) {
-	err := Delete(productType, id, categoryID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error while deleting images": err.Error()})
-		return
-	}
 }

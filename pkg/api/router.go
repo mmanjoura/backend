@@ -3,21 +3,21 @@ package api
 import (
 	"time"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/cmd/server/docs"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/activities"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/amadeus/flight_booking"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/comments"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/contacts"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/contentTypes"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/faqs"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/golfs"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/itineraries"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/storage"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/tours"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/users"
+	"github.com/mmanjoura/niya-voyage/backend/cmd/server/docs"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/activities"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/amadeus/flight_booking"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/comments"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/contacts"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/contentTypes"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/faqs"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/golfs"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/itineraries"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/storage"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/tours"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/users"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/auth"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/middleware"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/auth"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
@@ -27,12 +27,13 @@ import (
 
 // InitRouter initializes the routes for the API
 func InitRouter() *gin.Engine {
+
 	r := gin.Default()
 
 	r.Use(gin.Logger())
-	if gin.Mode() == gin.ReleaseMode {
-		r.Use(middleware.Security())
-	}
+	// if gin.Mode() == gin.ReleaseMode {
+	// 	r.Use(middleware.Security())
+	// }
 	r.Use(middleware.Cors())
 
 	r.Use(middleware.RateLimiter(rate.Every(1*time.Minute), 600)) // 60 requests per minute
@@ -97,7 +98,7 @@ func InitRouter() *gin.Engine {
 		v1.POST("/register", auth.RegisterHandler)
 		v1.POST("/logout", auth.Logout)
 
-		v1.GET("/users/account", users.Account)
+		v1.GET("/users/account", middleware.JWTAuth(), users.Account)
 
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

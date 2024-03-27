@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/amadeus"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/amadeus"
 )
 
 func main() {

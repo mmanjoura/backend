@@ -9,7 +9,7 @@ import (
 	"database/sql"
 
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/models"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/models"
 )
 
 type DbInstance struct {
@@ -23,7 +23,7 @@ func ConnectDatabase() {
 
 	var err error
 
-	db, err := sql.Open("sqlite3", "./niya-voyage-v2.db")
+	db, err := sql.Open("sqlite3", "./niya-voyage.db")
 
 	if err != nil {
 		log.Fatal("Failed to connect to the database! \n", err)

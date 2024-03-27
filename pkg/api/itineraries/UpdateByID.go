@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/common"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/database"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/models"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/common"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/database"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/models"
 
 	"github.com/gin-gonic/gin"
 )

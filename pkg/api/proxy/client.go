@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/amadeus"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/amadeus"
 )
 
 func GetAmadiusClient() (*amadeus.Amadeus, error) {

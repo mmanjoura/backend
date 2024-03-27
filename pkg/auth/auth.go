@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/database"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/models"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/database"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/models"
 
 	"database/sql"
 
@@ -82,7 +82,7 @@ func LoginHandler(c *gin.Context) {
 	c.SetSameSite(http.SameSiteNoneMode)
 	// Set a cookie named "Authorization" with the provided token value
 	// Replace "yourdomain.com" with the appropriate domain for your Cloud Run service
-	c.SetCookie("Authorization", token, int(time.Hour*24), "/", "https://niyavoyage.com", true, true)
+	c.SetCookie("Authorization", token, int(time.Hour*24), "/", "", true, false)
 
 	c.JSON(http.StatusOK, gin.H{"user": dbUser})
 }

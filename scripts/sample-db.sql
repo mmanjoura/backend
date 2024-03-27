@@ -114,10 +114,10 @@ INSERT INTO Activities (
                            '10',
                            'People from various backgrounds and with different levels of expertise come together to share their passion for these crafts. The workshops often encourage collaboration, knowledge exchange, and creative exploration, creating a vibrant and supportive atmosphere for artistic growth.
 
-At the end of both workshops, participants will not only take their newfound knowledge and skills but also the tangible results of their hard work. In the pottery workshop, you will proudly carry home your handmade pottery pieces, showcasing your personal touch and creativity. Whether it’s a functional ceramic item or a decorative sculpture, it will serve as a reminder of the fulfilling journey you embarked upon during the workshop. Similarly, in the Zellige workshop, participants will leave with their own mosaic creation, capturing the essence of this ancient art form. This tangible artifact will serve as a testament to your dedication and craftsmanship.',
+At the end of both workshops, participants will not only take their newfound knowledge and skills but also the tangible results of their hard work. In the pottery workshop, you will proudly carry home your handmade pottery pieces, showcasing your personal touch and creativity. Whether itï¿½s a functional ceramic item or a decorative sculpture, it will serve as a reminder of the fulfilling journey you embarked upon during the workshop. Similarly, in the Zellige workshop, participants will leave with their own mosaic creation, capturing the essence of this ancient art form. This tangible artifact will serve as a testament to your dedication and craftsmanship.',
                            'You cannot Cancel',
                            'Private transportation, Tour guide at the Workshop, Instructors teaching you how to make traditional crafts of pottery and Zellige, Pick up for free to our workshop, Drinks',
-                           'Wheelchair accessible, Infants and small children can ride in a pram or stroller, Public transportation options are available nearby, Infants are required to sit on an adult’s lap, Suitable for all physical fitness levels',
+                           'Wheelchair accessible, Infants and small children can ride in a pram or stroller, Public transportation options are available nearby, Infants are required to sit on an adultï¿½s lap, Suitable for all physical fitness levels',
                            'Private transportation, Tour guide at the Workshop, Instructors teaching you how to make traditional crafts of pottery and Zellige, Pick up for free to our workshop, Drinks',
                            'Private transportation, Tour guide at the Workshop, Instructors teaching you how to make traditional crafts of pottery and Zellige, Pick up for free to our workshop, Drinks',
                            '66',
@@ -352,7 +352,7 @@ INSERT INTO Configurations (
                            VALUES (
                                3,
                                'DB_NAME',
-                               'niya-voyage-v2.db'
+                               'niya-voyage.db'
                            );
 
 INSERT INTO Configurations (

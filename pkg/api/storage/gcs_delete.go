@@ -8,8 +8,8 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/gin-gonic/gin"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/api/images"
-	"github.com/mmanjoura/niya-voyage-v2/backend-v2/pkg/database"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/images"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/database"
 )
 
 // Constants for configuration keys

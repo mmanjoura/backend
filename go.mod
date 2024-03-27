@@ -1,4 +1,4 @@
-module github.com/mmanjoura/niya-voyage-v2/backend-v2
+module github.com/mmanjoura/niya-voyage/backend
 
 go 1.21.1
 
@@ -16,6 +16,7 @@ require (
 
 require (
 	cloud.google.com/go/storage v1.38.0
+	github.com/disintegration/imaging v1.6.2
 	golang.org/x/crypto v0.18.0
 )
 
@@ -39,6 +40,7 @@ require (
 	go.opentelemetry.io/otel v1.22.0 // indirect
 	go.opentelemetry.io/otel/metric v1.22.0 // indirect
 	go.opentelemetry.io/otel/trace v1.22.0 // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/oauth2 v0.16.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
 	google.golang.org/api v0.162.0 // indirect
