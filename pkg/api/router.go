@@ -88,8 +88,16 @@ func InitRouter() *gin.Engine {
 
 		// contacts routes
 		v1.POST("/contacts", contacts.Create)
+		v1.GET("/contacts", contacts.GetAll)
+		v1.GET("/contacts/:id", contacts.GetByID)
+		v1.PUT("/contacts/:id", contacts.UpdateByID)
+		v1.DELETE("/contacts/:id", contacts.DeleteByID)
 
 		v1.POST("/comments", comments.Create)
+		v1.GET("/comments", comments.GetAll)
+		v1.GET("/comments/:id", comments.GetByID)
+		v1.PUT("/comments/:id", comments.UpdateByID)
+		v1.DELETE("/comments/:id", comments.DeleteByID)
 
 		// amadeus routes
 		v1.GET("/flightOffers", flight_booking.ShoppingFlightOffers)

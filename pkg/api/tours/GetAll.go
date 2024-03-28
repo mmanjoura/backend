@@ -101,6 +101,16 @@ func retrieveTours(c *gin.Context, db *sql.DB, offset, limit int) ([]models.Tour
 				return nil, err
 			}
 
+			tour.GalleryImages, err = images.RetrieveGalleryImages(c, db, limit, offset, tour.ID, categoryId)
+			if err != nil {
+				return nil, err
+			}
+
+			tour.SlideImages, err = images.RetrieveSlideImages(c, db, limit, offset, tour.ID, categoryId)
+			if err != nil {
+				return nil, err
+			}
+
 			tourItineraries, err := itineraries.RetrieveItineraries(c, db, limit, offset, tour.ID, categoryId)
 			if err != nil {
 				return nil, err
@@ -112,6 +122,8 @@ func retrieveTours(c *gin.Context, db *sql.DB, offset, limit int) ([]models.Tour
 			}
 
 			tour.Images = tourImages
+			tour.GalleryImages = tour.GalleryImages
+			tour.SlideImages = tour.SlideImages
 			tour.Itineraries = tourItineraries
 			tour.Faqs = tourFaqs
 			tours = append(tours, tour)

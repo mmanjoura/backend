@@ -108,7 +108,7 @@ func UploadImagesHandler(c *gin.Context) {
 			return
 		}
 
-		slideImage, err := common.ProcessImage(img, 451, 450)
+		slideImage, err := common.ProcessImage(img, 300, 300)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -187,10 +187,10 @@ func deleteOldReferences(c *gin.Context, db *sql.DB, imageType string, id, categ
 
 	switch imageType {
 	case "GALLERY":
-		tableName = "Images"
+		tableName = "GalleryImages"
 		columnName = "referrer_id"
 	case "SLIDE":
-		tableName = "Images"
+		tableName = "SlideImages"
 		columnName = "referrer_id"
 	}
 

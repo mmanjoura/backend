@@ -98,6 +98,19 @@ func GetByID(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error while getting GalleryImages": "Failed to get gallery images"})
 			return
 		}
+
+		tourGalleryImages, err := images.RetrieveGalleryImages(c, db, limit, offset, tour.ID, categoryId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error while getting GalleryImages": "Failed to get gallery images"})
+			return
+		}
+
+		tourSlideImages, err := images.RetrieveSlideImages(c, db, limit, offset, tour.ID, categoryId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error while getting SlideImages": "Failed to get slide images"})
+			return
+		}
+
 		tourItineraries, err := itineraries.RetrieveItineraries(c, db, limit, offset, tour.ID, categoryId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error while getting TourItineraries": "Failed to get tour itineraries"})
@@ -111,7 +124,8 @@ func GetByID(c *gin.Context) {
 		}
 
 		tour.Images = tourImages
-		// tour.SlideImages = tourSlideImages
+		tour.SlideImages = tourSlideImages
+		tour.GalleryImages = tourGalleryImages
 		tour.Itineraries = tourItineraries
 		tour.Faqs = tourFaqs
 	}

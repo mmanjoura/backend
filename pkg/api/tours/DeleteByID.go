@@ -52,7 +52,19 @@ func DeleteByID(c *gin.Context) {
 
 	_, err = db.ExecContext(c, `DELETE FROM Images WHERE Referrer_id = ? AND category_id = ?`, tourID, categoryId)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error while deleting Images": err.Error()})
+		return
+	}
+
+	_, err = db.ExecContext(c, `DELETE FROM SlideImages WHERE Referrer_id = ? AND category_id = ?`, tourID, categoryId)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error while deleting SlideImage": err.Error()})
+		return
+	}
+
+	_, err = db.ExecContext(c, `DELETE FROM GalleryImages WHERE Referrer_id = ? AND category_id = ?`, tourID, categoryId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error while deleting GalleryImages": err.Error()})
 		return
 	}
 
