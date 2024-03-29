@@ -6,6 +6,7 @@ import (
 	"github.com/mmanjoura/niya-voyage/backend/cmd/server/docs"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/activities"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/amadeus/flight_booking"
+	"github.com/mmanjoura/niya-voyage/backend/pkg/api/bookings"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/comments"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/contacts"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/contentTypes"
@@ -98,6 +99,13 @@ func InitRouter() *gin.Engine {
 		v1.GET("/comments/:id", comments.GetByID)
 		v1.PUT("/comments/:id", comments.UpdateByID)
 		v1.DELETE("/comments/:id", comments.DeleteByID)
+
+		// Bookings routes
+		v1.GET("/bookings", bookings.GetAll)
+		v1.POST("/bookings", bookings.Create)
+		v1.GET("/bookings/:id", bookings.GetByID)
+		v1.PUT("/bookings/:id", bookings.UpdateByID)
+		v1.DELETE("/bookings/:id", bookings.DeleteByID)
 
 		// amadeus routes
 		v1.GET("/flightOffers", flight_booking.ShoppingFlightOffers)
