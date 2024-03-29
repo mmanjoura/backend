@@ -29,8 +29,14 @@ func UploadImagesHandler(c *gin.Context) {
 	// Extract necessary information from the request
 	db := database.Database.DB
 	productType := strings.ToUpper(c.Query("category"))
-	id, err := strconv.Atoi(c.Query("id"))
-	if err != nil || id == 0 {
+	referrer_id, err := strconv.Atoi(c.Query("id"))
+
+	slide_width, err := strconv.Atoi(c.Query("slide_width"))
+	slide_height, err := strconv.Atoi(c.Query("slide_height"))
+	gallery_width, err := strconv.Atoi(c.Query("gallery_width"))
+	gallery_height, err := strconv.Atoi(c.Query("gallery_height"))
+
+	if err != nil || referrer_id == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid or missing ID"})
 		return
 	}
@@ -47,10 +53,6 @@ func UploadImagesHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	// Get client URI from the request headers
-	// clientURI := c.Request.Header.Get("Client-Uri")
-	// fmt.Println("Client-Uri: ", clientURI)
 
 	// Retrieve configuration information from the database
 	config := database.Database.Config
@@ -96,7 +98,7 @@ func UploadImagesHandler(c *gin.Context) {
 
 	// Process each uploaded file
 	for _, file := range files {
-		strID := strconv.Itoa(id)
+		strID := strconv.Itoa(referrer_id)
 
 		// convert the multipart file into io.Reader
 		fileReader, err := common.FileHeaderToReader(file)
@@ -108,12 +110,14 @@ func UploadImagesHandler(c *gin.Context) {
 			return
 		}
 
-		slideImage, err := common.ProcessImage(img, 300, 300)
+		// Process the image to create a slide image and a gallery image
+
+		slideImage, err := common.ProcessImage(img, slide_width, slide_height)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		galleryImage, err := common.ProcessImage(img, 600, 500)
+		galleryImage, err := common.ProcessImage(img, gallery_width, gallery_height)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -151,7 +155,7 @@ func UploadImagesHandler(c *gin.Context) {
 				}
 				// Append the new image to the slice
 				newGalleryImages = append(newGalleryImages, newGalleryImage)
-				err = insertImageIntoDatabase(c, db, "GALLERY", categoryID, id, newGalleryImage)
+				err = insertImageIntoDatabase(c, db, "GALLERY", categoryID, referrer_id, newGalleryImage)
 				if err != nil {
 					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 					return
@@ -168,7 +172,7 @@ func UploadImagesHandler(c *gin.Context) {
 				}
 				// Append the new image to the slice
 				newSlideImages = append(newSlideImages, newSlideImage)
-				err = insertImageIntoDatabase(c, db, "SLIDE", categoryID, id, newSlideImage)
+				err = insertImageIntoDatabase(c, db, "SLIDE", categoryID, referrer_id, newSlideImage)
 				if err != nil {
 					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 					return
@@ -182,7 +186,7 @@ func UploadImagesHandler(c *gin.Context) {
 }
 
 // deleteOldReferences deletes old references of images from the database based on the image type.
-func deleteOldReferences(c *gin.Context, db *sql.DB, imageType string, id, categoryID int) {
+func deleteOldReferences(c *gin.Context, db *sql.DB, imageType string, referrer_id, categoryID int) {
 	var tableName, columnName string
 
 	switch imageType {
@@ -196,7 +200,7 @@ func deleteOldReferences(c *gin.Context, db *sql.DB, imageType string, id, categ
 
 	// Construct the SQL query to delete old references
 	query := fmt.Sprintf("DELETE FROM %s WHERE %s = ? AND category_id = ?", tableName, columnName)
-	if _, err := db.ExecContext(c, query, id, categoryID); err != nil {
+	if _, err := db.ExecContext(c, query, referrer_id, categoryID); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Error while deleting %s: %s", imageType, err.Error())})
 		return
 	}
@@ -220,7 +224,7 @@ func uploadFileToStorage(ctx context.Context, obj *storage.ObjectHandle, img io.
 }
 
 // insertImageIntoDatabase inserts an image into the database based on the image type.
-func insertImageIntoDatabase(c *gin.Context, db *sql.DB, imageType string, categoryID, id int, images interface{}) error {
+func insertImageIntoDatabase(c *gin.Context, db *sql.DB, imageType string, categoryID, referrer_id int, images interface{}) error {
 	var tableName string
 
 	switch imageType {
@@ -237,7 +241,7 @@ func insertImageIntoDatabase(c *gin.Context, db *sql.DB, imageType string, categ
 	if ok {
 		// Construct the SQL query to insert the image into the database
 		query := fmt.Sprintf("INSERT INTO %s (category_id, referrer_id, img) VALUES (?, ?, ?)", tableName)
-		if _, err := db.Exec(query, galleryImage.CategoryID, id, galleryImage.Img); err != nil {
+		if _, err := db.Exec(query, galleryImage.CategoryID, referrer_id, galleryImage.Img); err != nil {
 			// c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return err
 		}
@@ -246,7 +250,7 @@ func insertImageIntoDatabase(c *gin.Context, db *sql.DB, imageType string, categ
 	if ok {
 		// Construct the SQL query to insert the image into the database
 		query := fmt.Sprintf("INSERT INTO %s (category_id, referrer_id, img) VALUES (?, ?, ?)", tableName)
-		if _, err := db.Exec(query, slideImage.CategoryID, id, slideImage.Img); err != nil {
+		if _, err := db.Exec(query, slideImage.CategoryID, referrer_id, slideImage.Img); err != nil {
 			// c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return err
 		}

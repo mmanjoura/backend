@@ -87,6 +87,15 @@ func retrieveActivities(c *gin.Context, db *sql.DB, offset, limit int) ([]models
 			if err != nil {
 				return nil, err
 			}
+			golf.GalleryImages, err = images.RetrieveGalleryImages(c, db, limit, offset, golf.ID, categoryId)
+			if err != nil {
+				return nil, err
+			}
+
+			golf.SlideImages, err = images.RetrieveSlideImages(c, db, limit, offset, golf.ID, categoryId)
+			if err != nil {
+				return nil, err
+			}
 
 			golfItineraries, err := itineraries.RetrieveItineraries(c, db, limit, offset, golf.ID, categoryId)
 			if err != nil {

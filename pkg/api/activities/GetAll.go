@@ -88,6 +88,16 @@ func retrieveActivities(c *gin.Context, db *sql.DB, offset, limit int) ([]models
 				return nil, err
 			}
 
+			activity.GalleryImages, err = images.RetrieveGalleryImages(c, db, limit, offset, activity.ID, categoryId)
+			if err != nil {
+				return nil, err
+			}
+
+			activity.SlideImages, err = images.RetrieveSlideImages(c, db, limit, offset, activity.ID, categoryId)
+			if err != nil {
+				return nil, err
+			}
+
 			activityItineraries, err := itineraries.RetrieveItineraries(c, db, limit, offset, activity.ID, categoryId)
 			if err != nil {
 				return nil, err

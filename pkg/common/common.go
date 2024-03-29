@@ -88,10 +88,14 @@ func ProcessImage(
 	// Open the input image file
 
 	// Crop the original image to specified size using the center anchor.
-	croppedImage := imaging.CropAnchor(img, 800, 600, imaging.Center)
-
-	// Resize the cropped image to gallery dimensions preserving the aspect ratio.
-	img = imaging.Resize(croppedImage, width, hight, imaging.Lanczos)
+	if width >= 800 && hight >= 600 {
+		croppedImage := imaging.CropAnchor(img, 800, 600, imaging.Center)
+		img = imaging.Resize(croppedImage, width, hight, imaging.Lanczos)
+	} else {
+		croppedImage := imaging.CropAnchor(img, 800, 800, imaging.Center)
+		img = imaging.Resize(croppedImage, width, hight, imaging.Lanczos)
+	}
+	
 
 	return img, nil
 }
