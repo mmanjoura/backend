@@ -22,7 +22,7 @@ type Golf struct {
 	AdditionalInformation string         `json:"additional_information"`
 	ImportantInformation  string         `json:"important_information"`
 	Price                 string         `json:"price"`
-	GolfType              string         `json:"golf_type"`
+	ActivityType          string    `json:"activity_type"`
 	Animation             string         `json:"animation"`
 	Images                []Image        `json:"images"`
 	GalleryImages         []GalleryImage `json:"gallery_images"`
@@ -53,7 +53,7 @@ type CreateGolf struct {
 	AdditionalInformation string    `json:"additional_information"`
 	ImportantInformation  string    `json:"important_information"`
 	Price                 string    `json:"price"`
-	GolfType              string    `json:"golf_type"`
+	ActivityType          string    `json:"activity_type"`
 	Animation             string    `json:"animation"`
 	CreatedAt             time.Time `json:"created_at"`
 	UpdatedAt             time.Time `json:"updated_at"`
@@ -79,7 +79,7 @@ type UpdateGolf struct {
 	AdditionalInformation string    `json:"additional_information"`
 	ImportantInformation  string    `json:"important_information"`
 	Price                 string    `json:"price"`
-	GolfType              string    `json:"golf_type"`
+	ActivityType          string    `json:"activity_type"`
 	Animation             string    `json:"animation"`
 	CreatedAt             time.Time `json:"created_at"`
 	UpdatedAt             time.Time `json:"updated_at"`

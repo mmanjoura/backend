@@ -54,7 +54,7 @@ func Create(c *gin.Context) {
 			additional_information,
 			important_information,
 			price,
-			tour_type,
+			activity_type,
 			animation,
 			Created_At,
 			Updated_At)
@@ -77,7 +77,7 @@ func Create(c *gin.Context) {
 		newTour.AdditionalInformation,
 		newTour.ImportantInformation,
 		newTour.Price,
-		newTour.TourType,
+		newTour.ActivityType,
 		"100",
 		time.Now(),
 		time.Now())

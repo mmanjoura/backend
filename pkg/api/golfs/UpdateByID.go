@@ -59,7 +59,7 @@ func UpdateByID(c *gin.Context) {
 			additional_information = ?,
 			important_information = ?,
 			price = ?,
-			golf_type = ?,
+			activity_type = ?,
 			animation = ?,
 			Updated_At = ?
 		WHERE ID = ?`,
@@ -81,7 +81,7 @@ func UpdateByID(c *gin.Context) {
 		updatedGolf.AdditionalInformation,
 		updatedGolf.ImportantInformation,
 		updatedGolf.Price,
-		updatedGolf.GolfType,
+		updatedGolf.ActivityType,
 		updatedGolf.Animation,
 		time.Now(),
 		golfID)

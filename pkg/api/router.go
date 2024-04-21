@@ -80,7 +80,7 @@ func InitRouter() *gin.Engine {
 		v1.PUT("/activities/:id", middleware.JWTAuth(), activities.UpdateByID)
 		v1.DELETE("/activities/:id", middleware.JWTAuth(), activities.DeleteByID)
 
-		// Activities routes
+		// Activities routes	
 		v1.GET("/activitytypes", contentTypes.GetAll)
 		v1.POST("/activitytypes", middleware.JWTAuth(), contentTypes.Create)
 		v1.GET("/activitytypes/:id", contentTypes.GetByID)
@@ -101,11 +101,11 @@ func InitRouter() *gin.Engine {
 		v1.DELETE("/comments/:id", comments.DeleteByID)
 
 		// Bookings routes
-		v1.GET("/bookings", bookings.GetAll)
-		v1.POST("/bookings", bookings.Create)
-		v1.GET("/bookings/:id", bookings.GetByID)
-		v1.PUT("/bookings/:id", bookings.UpdateByID)
-		v1.DELETE("/bookings/:id", bookings.DeleteByID)
+		v1.GET("/booking", bookings.GetAll)
+		v1.POST("/booking", bookings.Create)
+		v1.GET("/booking/:id", bookings.GetByID)
+		v1.PUT("/booking/:id", bookings.UpdateByID)
+		v1.DELETE("/booking/:id", bookings.DeleteByID)
 
 		// amadeus routes
 		v1.GET("/flightOffers", flight_booking.ShoppingFlightOffers)

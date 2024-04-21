@@ -58,7 +58,7 @@ func GetByID(c *gin.Context) {
 			additional_information,
 			important_information,
 			price,
-			tour_type,
+			activity_type,
 			animation,
 			Created_At,
 			Updated_At
@@ -82,7 +82,7 @@ func GetByID(c *gin.Context) {
 			&tour.AdditionalInformation,
 			&tour.ImportantInformation,
 			&tour.Price,
-			&tour.TourType,
+			&tour.ActivityType,
 			&tour.Animation,
 			&tour.CreatedAt,
 			&tour.UpdatedAt)
