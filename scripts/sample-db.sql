@@ -700,7 +700,7 @@ CREATE TABLE IF NOT EXISTS Users (
     password   TEXT     DEFAULT CURRENT_TIMESTAMP,
     Updated_At DATETIME DEFAULT CURRENT_TIMESTAMP,
     Created_At DATETIME DEFAULT (CURRENT_TIMESTAMP),
-    isAdmin    INTEGER  DEFAULT (0) 
+    token    string  
 );
 
 INSERT INTO Users (
@@ -711,7 +711,7 @@ INSERT INTO Users (
                       password,
                       Updated_At,
                       Created_At,
-                      isAdmin
+                      token
                   )
                   VALUES (
                       42,
@@ -720,7 +720,7 @@ INSERT INTO Users (
                       'mustapha.manjoura@gmail.com',
                       '$2a$14$M56c11LsCvQNvqtU9f3ZCugna0JhQLr5FNxtv8AQxC3JwIC5sSJfe',
                       '2024-02-14 15:42:41.1779984+00:00',
-                      '2024-02-14 15:42:40.6921381+00:00',
+                      'k1U6pO+9qZteWy+yE52Z56qSBqmJ1orl27r/28AfkIA=',
                       1
                   );
 

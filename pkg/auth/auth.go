@@ -55,8 +55,8 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// Fetch the user from the database
-	err := db.QueryRow("SELECT id, firstname, lastname, email, password, isAdmin, Created_At, Updated_At FROM users WHERE email = ?", incomingUser.Email).
-		Scan(&dbUser.ID, &dbUser.FirstName, &dbUser.LastName, &dbUser.Email, &dbUser.Password, &dbUser.IsAdmin, &dbUser.CreatedAt, &dbUser.UpdatedAt)
+	err := db.QueryRow("SELECT id, firstname, lastname, email, password, token, Created_At, Updated_At FROM users WHERE email = ?", incomingUser.Email).
+		Scan(&dbUser.ID, &dbUser.FirstName, &dbUser.LastName, &dbUser.Email, &dbUser.Password, &dbUser.Token, &dbUser.CreatedAt, &dbUser.UpdatedAt)
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -102,7 +102,7 @@ func LoginHandler(c *gin.Context) {
 // @Router /register [post]
 func RegisterHandler(c *gin.Context) {
 	var user models.User
-	db := database.Database.DB
+	db := database.Database.DB	
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -118,18 +118,18 @@ func RegisterHandler(c *gin.Context) {
 
 	// Create new user
 	newUser := models.User{
+		Token:     GenerateRandomKey(),
 		FirstName: user.FirstName,
 		LastName:  user.LastName,
 		Password:  hashedPassword,
-		IsAdmin:   0,
 		Email:     user.Email,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 
 	// Execute the SQL query to insert a new user
-	_, err = db.Exec("INSERT INTO users (firstname, lastname, email, password, Created_At, Updated_At) VALUES (?, ?, ?, ?, ?, ?)",
-		newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.CreatedAt, newUser.UpdatedAt)
+	_, err = db.Exec("INSERT INTO users (firstname, lastname, email, password, token, Created_At, Updated_At) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		newUser.FirstName, newUser.LastName, newUser.Email, newUser.Password, newUser.Token, newUser.CreatedAt, newUser.UpdatedAt)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save user"})

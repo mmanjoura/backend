@@ -21,7 +21,6 @@ import (
 // Constants for configuration keys
 const (
 	googleBucketNameKey = "GOOGLE-BUCKET-NAME"
-	googleProjectIDKey  = "GOOGLE-PROJECT-ID"
 )
 
 // UploadImagesHandler handles image uploads.

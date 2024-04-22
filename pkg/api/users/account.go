@@ -72,7 +72,7 @@ func retrieveUserAccount(c *gin.Context, offset, limit int, userEmail string) (m
        lastname,
        email,
        password,
-	   isAdmin,
+	   token,
        Updated_At,
        Created_At
   FROM Users WHERE email = ?`, userEmail).
@@ -81,7 +81,7 @@ func retrieveUserAccount(c *gin.Context, offset, limit int, userEmail string) (m
 			&user.LastName,
 			&user.Email,
 			&user.Password,
-			&user.IsAdmin,
+			&user.Token,
 			&user.UpdatedAt,
 			&user.CreatedAt,
 		)

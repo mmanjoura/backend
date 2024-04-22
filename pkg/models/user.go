@@ -13,7 +13,7 @@ type User struct {
 	LastName  string    `json:"lastName" binding:"required"`
 	Email     string    `json:"email" binding:"required"`
 	Password  string    `json:"password" binding:"required"`
-	IsAdmin   int       `json:"isAdmin"`
+	Token     string    `json:"token"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

@@ -82,7 +82,7 @@ func getUser(c *gin.Context, userEmail string) (models.User, error) {
        lastname,
        email,
        password,
-	   isAdmin,
+	   token,
        Updated_At,
        Created_At
   FROM Users WHERE email = ?`, userEmail).
@@ -91,7 +91,7 @@ func getUser(c *gin.Context, userEmail string) (models.User, error) {
 			&user.LastName,
 			&user.Email,
 			&user.Password,
-			&user.IsAdmin,
+			&user.Token,
 			&user.UpdatedAt,
 			&user.CreatedAt,
 		)

@@ -17,6 +17,7 @@ import (
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/tours"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/api/users"
 
+
 	"github.com/mmanjoura/niya-voyage/backend/pkg/auth"
 	"github.com/mmanjoura/niya-voyage/backend/pkg/middleware"
 
@@ -115,6 +116,11 @@ func InitRouter() *gin.Engine {
 		v1.POST("/logout", auth.Logout)
 
 		v1.GET("/users/account", middleware.JWTAuth(), users.Account)
+			// Download database
+			v1.GET("/backup", func(c *gin.Context) {
+				storage.BackUp(c)
+			})
+	
 
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
