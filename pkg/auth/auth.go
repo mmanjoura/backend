@@ -74,15 +74,15 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	// Generate JWT token
-	token, err := GenerateToken(dbUser.Email)
+	// token, err := GenerateToken(dbUser.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating token"})
 		return
 	}
-	c.SetSameSite(http.SameSiteNoneMode)
+	// c.SetSameSite(http.SameSiteNoneMode)
 	// Set a cookie named "Authorization" with the provided token value
 	// Replace "yourdomain.com" with the appropriate domain for your Cloud Run service
-	c.SetCookie("Authorization", token, int(time.Hour*24), "/", "", true, false)
+	// c.SetCookie("Authorization", token, int(time.Hour*24), "/", "", true, false)
 
 	c.JSON(http.StatusOK, gin.H{"user": dbUser})
 }
